@@ -13,9 +13,9 @@ function Profile() {
     const [followerCount, setFollowerCount] = useState(0);
     const [followingStatus, setFollowingStatus] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [username, setUsername] = useState("");
+    const [editFirstName, setEditFirstName] = useState("");
+    const [editLastName, setEditLastName] = useState("");
+    const [editUsername, setEditUsername] = useState("");
     const [yaps, setYaps] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -76,6 +76,11 @@ function Profile() {
         ])
             .then(([userData, followingCountData, followerCountData, followStatus, yapsData]) => {
                 setUser(userData);
+                if (userData.user_id === authUser.user_id) {
+                    setEditFirstName(userData.first_name);
+                    setEditLastName(userData.last_name);
+                    setEditUsername(userData.username);
+                }
                 setFollowingCount(followingCountData);
                 setFollowerCount(followerCountData);
                 setFollowingStatus(followStatus);
@@ -145,7 +150,7 @@ function Profile() {
     function handleEdit(e) {
         e.preventDefault();
 
-        if (!firstName.trim() && !lastName.trim() && !username.trim()) {
+        if (!editFirstName.trim() && !editLastName.trim() && !editUsername.trim()) {
             return;
         }
     
@@ -154,7 +159,7 @@ function Profile() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ firstName: firstName, lastName: lastName, username: username })
+            body: JSON.stringify({ firstName: editFirstName, lastName: editLastName, username: editUsername })
         })
             .then((response) => {
                 if (!response.ok) {
@@ -228,9 +233,8 @@ function Profile() {
                     </section>
                 </div>
             </main>
-
             {editing && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+                <div className="fixed inset-0 bg-zinc-500 bg-opacity-25 backdrop-blur-sm flex justify-center items-center z-50">
                     <div className="bg-black border border-zinc-50/20 flex flex-col gap-4 items-center p-10 rounded-lg shadow-lg max-w-xs w-full">
                         <div className="text-3xl font-bold">Edit Profile</div>
                         <form onSubmit={handleEdit} className="flex flex-col w-full space-y-4">
@@ -241,8 +245,8 @@ function Profile() {
                                     placeholder="Enter first name" 
                                     id="firstName"
                                     className="bg-zinc-900 rounded-full px-4 py-2 w-full border border-zinc-900 focus:outline-none focus:border focus:border-sky-500 placeholder:text-zinc-50/50" 
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
+                                    value={editFirstName}
+                                    onChange={(e) => setEditFirstName(e.target.value)}
                                 />
                             </div>
                             <div className="flex flex-col">
@@ -252,8 +256,8 @@ function Profile() {
                                     placeholder="Enter last name" 
                                     id="lastName"
                                     className="bg-zinc-900 rounded-full px-4 py-2 w-full border border-zinc-900 focus:outline-none focus:border focus:border-sky-500 placeholder:text-zinc-50/50" 
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
+                                    value={editLastName}
+                                    onChange={(e) => setEditLastName(e.target.value)}
                                 />
                             </div>
                             <div className="flex flex-col">
@@ -263,8 +267,8 @@ function Profile() {
                                     placeholder="Enter username" 
                                     id="username"
                                     className="bg-zinc-900 rounded-full px-4 py-2 w-full border border-zinc-900 focus:outline-none focus:border focus:border-sky-500 placeholder:text-zinc-50/50" 
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    value={editUsername}
+                                    onChange={(e) => setEditUsername(e.target.value)}
                                 />
                             </div>
                             <button type="submit" className="bg-white text-black px-12 py-2 rounded-full w-full font-semibold hover:bg-zinc-50/90">
